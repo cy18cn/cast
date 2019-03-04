@@ -20,8 +20,6 @@ var errNegativeNotAllowed = errors.New("unable to cast negative value")
 
 // ToTimeE casts an interface to a time.Time type.
 func ToTimeE(i interface{}) (tim time.Time, err error) {
-	i = indirect(i)
-
 	switch v := i.(type) {
 	case time.Time:
 		return v, nil
@@ -46,8 +44,6 @@ func ToTimeE(i interface{}) (tim time.Time, err error) {
 
 // ToDurationE casts an interface to a time.Duration type.
 func ToDurationE(i interface{}) (d time.Duration, err error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case time.Duration:
 		return s, nil
@@ -72,8 +68,6 @@ func ToDurationE(i interface{}) (d time.Duration, err error) {
 
 // ToBoolE casts an interface to a bool type.
 func ToBoolE(i interface{}) (bool, error) {
-	i = indirect(i)
-
 	switch b := i.(type) {
 	case bool:
 		return b, nil
@@ -93,8 +87,6 @@ func ToBoolE(i interface{}) (bool, error) {
 
 // ToFloat64E casts an interface to a float64 type.
 func ToFloat64E(i interface{}) (float64, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case float64:
 		return s, nil
@@ -138,8 +130,6 @@ func ToFloat64E(i interface{}) (float64, error) {
 
 // ToFloat32E casts an interface to a float32 type.
 func ToFloat32E(i interface{}) (float32, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case float64:
 		return float32(s), nil
@@ -183,8 +173,6 @@ func ToFloat32E(i interface{}) (float32, error) {
 
 // ToInt64E casts an interface to an int64 type.
 func ToInt64E(i interface{}) (int64, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case int:
 		return int64(s), nil
@@ -230,8 +218,6 @@ func ToInt64E(i interface{}) (int64, error) {
 
 // ToInt32E casts an interface to an int32 type.
 func ToInt32E(i interface{}) (int32, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case int:
 		return int32(s), nil
@@ -277,8 +263,6 @@ func ToInt32E(i interface{}) (int32, error) {
 
 // ToInt16E casts an interface to an int16 type.
 func ToInt16E(i interface{}) (int16, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case int:
 		return int16(s), nil
@@ -324,8 +308,6 @@ func ToInt16E(i interface{}) (int16, error) {
 
 // ToInt8E casts an interface to an int8 type.
 func ToInt8E(i interface{}) (int8, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case int:
 		return int8(s), nil
@@ -371,8 +353,6 @@ func ToInt8E(i interface{}) (int8, error) {
 
 // ToIntE casts an interface to an int type.
 func ToIntE(i interface{}) (int, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case int:
 		return s, nil
@@ -418,8 +398,6 @@ func ToIntE(i interface{}) (int, error) {
 
 // ToUintE casts an interface to a uint type.
 func ToUintE(i interface{}) (uint, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case string:
 		v, err := strconv.ParseUint(s, 0, 0)
@@ -486,8 +464,6 @@ func ToUintE(i interface{}) (uint, error) {
 
 // ToUint64E casts an interface to a uint64 type.
 func ToUint64E(i interface{}) (uint64, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case string:
 		v, err := strconv.ParseUint(s, 0, 64)
@@ -554,8 +530,6 @@ func ToUint64E(i interface{}) (uint64, error) {
 
 // ToUint32E casts an interface to a uint32 type.
 func ToUint32E(i interface{}) (uint32, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case string:
 		v, err := strconv.ParseUint(s, 0, 32)
@@ -622,8 +596,6 @@ func ToUint32E(i interface{}) (uint32, error) {
 
 // ToUint16E casts an interface to a uint16 type.
 func ToUint16E(i interface{}) (uint16, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case string:
 		v, err := strconv.ParseUint(s, 0, 16)
@@ -690,8 +662,6 @@ func ToUint16E(i interface{}) (uint16, error) {
 
 // ToUint8E casts an interface to a uint type.
 func ToUint8E(i interface{}) (uint8, error) {
-	i = indirect(i)
-
 	switch s := i.(type) {
 	case string:
 		v, err := strconv.ParseUint(s, 0, 8)
@@ -760,45 +730,45 @@ func ToUint8E(i interface{}) (uint8, error) {
 // Copyright 2011 The Go Authors. All rights reserved.
 // indirect returns the value, after dereferencing as many times
 // as necessary to reach the base type (or nil).
-func indirect(a interface{}) interface{} {
-	if a == nil {
-		return nil
-	}
-	if t := reflect.TypeOf(a); t.Kind() != reflect.Ptr {
-		// Avoid creating a reflect.Value if it's not a pointer.
-		return a
-	}
-	v := reflect.ValueOf(a)
-	for v.Kind() == reflect.Ptr && !v.IsNil() {
-		v = v.Elem()
-	}
-	return v.Interface()
-}
+// in f is a pointer, return its value by reflect elem
+//func indirect(a interface{}) interface{} {
+//	if a == nil {
+//		return nil
+//	}
+//	if t := reflect.TypeOf(a); t.Kind() != reflect.Ptr {
+//		// Avoid creating a reflect.Value if it's not a pointer.
+//		return a
+//	}
+//	v := reflect.ValueOf(a)
+//	for v.Kind() == reflect.Ptr && !v.IsNil() {
+//		v = v.Elem()
+//	}
+//	return v.Interface()
+//}
 
 // From html/template/content.go
 // Copyright 2011 The Go Authors. All rights reserved.
 // indirectToStringerOrError returns the value, after dereferencing as many times
 // as necessary to reach the base type (or nil) or an implementation of fmt.Stringer
 // or error,
-func indirectToStringerOrError(a interface{}) interface{} {
-	if a == nil {
-		return nil
-	}
-
-	var errorType = reflect.TypeOf((*error)(nil)).Elem()
-	var fmtStringerType = reflect.TypeOf((*fmt.Stringer)(nil)).Elem()
-
-	v := reflect.ValueOf(a)
-	for !v.Type().Implements(fmtStringerType) && !v.Type().Implements(errorType) && v.Kind() == reflect.Ptr && !v.IsNil() {
-		v = v.Elem()
-	}
-	return v.Interface()
-}
+//func indirectToStringerOrError(a interface{}) interface{} {
+//	if a == nil {
+//		return nil
+//	}
+//
+//	var errorType = reflect.TypeOf((*error)(nil)).Elem()
+//	var fmtStringerType = reflect.TypeOf((*fmt.Stringer)(nil)).Elem()
+//
+//	v := reflect.ValueOf(a)
+//	for !v.Type().Implements(fmtStringerType) && !v.Type().Implements(errorType) && v.Kind() == reflect.Ptr && !v.IsNil() {
+//		v = v.Elem()
+//	}
+//	return v.Interface()
+//}
 
 // ToStringE casts an interface to a string type.
 func ToStringE(i interface{}) (string, error) {
-	i = indirectToStringerOrError(i)
-
+	//i = indirectToStringerOrError(i)
 	switch s := i.(type) {
 	case string:
 		return s, nil
@@ -1013,22 +983,24 @@ func ToStringMapIntE(i interface{}) (map[string]int, error) {
 	case string:
 		err := jsonStringToObject(v, &m)
 		return m, err
-	}
-
-	if reflect.TypeOf(i).Kind() != reflect.Map {
+	default:
 		return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int", i, i)
 	}
 
-	mVal := reflect.ValueOf(m)
-	v := reflect.ValueOf(i)
-	for _, keyVal := range v.MapKeys() {
-		val, err := ToIntE(v.MapIndex(keyVal).Interface())
-		if err != nil {
-			return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int", i, i)
-		}
-		mVal.SetMapIndex(keyVal, reflect.ValueOf(val))
-	}
-	return m, nil
+	//if reflect.TypeOf(i).Kind() != reflect.Map {
+	//	return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int", i, i)
+	//}
+	//
+	//mVal := reflect.ValueOf(m)
+	//v := reflect.ValueOf(i)
+	//for _, keyVal := range v.MapKeys() {
+	//	val, err := ToIntE(v.MapIndex(keyVal).Interface())
+	//	if err != nil {
+	//		return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int", i, i)
+	//	}
+	//	mVal.SetMapIndex(keyVal, reflect.ValueOf(val))
+	//}
+	//return m, nil
 }
 
 // ToStringMapInt64E casts an interface to a map[string]int64{} type.
@@ -1054,21 +1026,23 @@ func ToStringMapInt64E(i interface{}) (map[string]int64, error) {
 	case string:
 		err := jsonStringToObject(v, &m)
 		return m, err
-	}
-
-	if reflect.TypeOf(i).Kind() != reflect.Map {
+	default:
 		return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int64", i, i)
 	}
-	mVal := reflect.ValueOf(m)
-	v := reflect.ValueOf(i)
-	for _, keyVal := range v.MapKeys() {
-		val, err := ToInt64E(v.MapIndex(keyVal).Interface())
-		if err != nil {
-			return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int64", i, i)
-		}
-		mVal.SetMapIndex(keyVal, reflect.ValueOf(val))
-	}
-	return m, nil
+
+	//if reflect.TypeOf(i).Kind() != reflect.Map {
+	//	return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int64", i, i)
+	//}
+	//mVal := reflect.ValueOf(m)
+	//v := reflect.ValueOf(i)
+	//for _, keyVal := range v.MapKeys() {
+	//	val, err := ToInt64E(v.MapIndex(keyVal).Interface())
+	//	if err != nil {
+	//		return m, fmt.Errorf("unable to cast %#v of type %T to map[string]int64", i, i)
+	//	}
+	//	mVal.SetMapIndex(keyVal, reflect.ValueOf(val))
+	//}
+	//return m, nil
 }
 
 // ToSliceE casts an interface to a []interface{} type.
